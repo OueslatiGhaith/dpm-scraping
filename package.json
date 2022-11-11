@@ -1,0 +1,21 @@
+{
+  "name": "dpm-scraping",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "cypress:run": "cypress run --headless --browser chrome",
+    "cypress:open": "cypress open"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@testing-library/cypress": "^8.0.3",
+    "cypress": "^11.0.1",
+    "cypress-xpath": "^2.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.8.4"
+  }
+}
