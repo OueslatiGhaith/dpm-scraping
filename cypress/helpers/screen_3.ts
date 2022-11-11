@@ -13,7 +13,7 @@ export default class Screen3 {
 
     cy.get("body").then(($body) => {
       const $font = $body.find("font");
-      if ($font && $font.text().trim() === "Pas d'inscription sur cette liste") {
+      if ($font && $font.text().trim() === "Aucune officine installée dans cett zone") {
         callback(data);
       } else {
         cy.get("body")
