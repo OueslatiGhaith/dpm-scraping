@@ -17,10 +17,12 @@ describe("liste attente NUIT", () => {
     cy.visit(LISTE_ATTENTE);
 
     const jourNuit = "NUIT";
+    let counter = 0;
 
     Screen1.getGourvernourats().each((gov, nbGov) => {
       const govText = gov.text().trim();
-      cy.log(`~~~~~~~~~~~~~~~~~~~~~~~ ${govText} / ${jourNuit} / Liste d'attente ~~~~~~~~~~~~~~~~~~~~~~~`);
+      counter += 1;
+      cy.log(`~~~~~~~~~~~~~~~~~~~~~~~ ${counter} - ${govText} / ${jourNuit} / Liste d'attente ~~~~~~~~~~~~~~~~~~~~~~~`);
       cy.visit(LISTE_ATTENTE);
 
       Screen1.selectGouvernourat(gov.text());

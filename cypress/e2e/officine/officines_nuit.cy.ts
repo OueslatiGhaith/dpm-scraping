@@ -19,10 +19,12 @@ describe("officines NUIT", () => {
     cy.visit(OFFICINE);
 
     const jourNuit = "NUIT";
+    let counter = 0;
 
     Screen1.getGourvernourats().each((gov, nbGov) => {
       const govText = gov.text().trim();
-      cy.log(`~~~~~~~~~~~~~~~~~~~~~~~ ${govText} / ${jourNuit} / Officines ~~~~~~~~~~~~~~~~~~~~~~~`);
+      counter++;
+      cy.log(`~~~~~~~~~~~~~~~~~~~~~~~ ${counter} - ${govText} / ${jourNuit} / Officines ~~~~~~~~~~~~~~~~~~~~~~~`);
       // if (nbGov === 2) return false;
       cy.visit(OFFICINE);
 

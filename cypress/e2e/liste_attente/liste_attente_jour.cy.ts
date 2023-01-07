@@ -12,41 +12,17 @@ type ListAttente = {
 };
 const list_attente: ListAttente = {};
 
-// describe("TEST", () => {
-//   it("passes", () => {
-//     cy.visit(LISTE_ATTENTE);
-
-//     const jourNuit = "JOUR";
-//     const gouvernourat = "BEJA";
-//     const delegation = "GOUBELLAT";
-
-//     Screen1.selectGouvernourat(gouvernourat);
-//     Screen1.selectJourNuit(jourNuit);
-//     Screen1.continue();
-
-//     Screen2.selectDelegation(delegation, jourNuit);
-//     Screen2.continue();
-
-//     Screen3.extractAttente((attente) => {
-//       if (list_attente[gouvernourat] === undefined) {
-//         list_attente[gouvernourat] = {};
-//       }
-//       list_attente[gouvernourat][delegation] = attente;
-//     });
-
-//     cy.writeFile(`./cypress/results/liste_attente/${jourNuit}.json`, list_attente);
-//   });
-// });
-
 describe("liste attente JOUR", () => {
   it("passes", () => {
     cy.visit(LISTE_ATTENTE);
 
     const jourNuit = "JOUR";
+    let counter = 0;
 
     Screen1.getGourvernourats().each((gov, nbGov) => {
       const govText = gov.text().trim();
-      cy.log(`~~~~~~~~~~~~~~~~~~~~~~~ ${govText} / ${jourNuit} / Liste d'attente ~~~~~~~~~~~~~~~~~~~~~~~`);
+      counter += 1;
+      cy.log(`~~~~~~~~~~~~~~~~~~~~~~~ ${counter} - ${govText} / ${jourNuit} / Liste d'attente ~~~~~~~~~~~~~~~~~~~~~~~`);
       cy.visit(LISTE_ATTENTE);
 
       Screen1.selectGouvernourat(gov.text());

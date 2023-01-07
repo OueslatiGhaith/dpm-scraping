@@ -2,7 +2,8 @@ import { defineConfig } from "cypress";
 
 export default defineConfig({
   chromeWebSecurity: false,
-  redirectionLimit: 10000000000000000000000,
+  redirectionLimit: 1000000000000000,
+  defaultCommandTimeout: 100000000000000,
   video: false,
   e2e: {
     setupNodeEvents(on, config) {
