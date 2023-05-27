@@ -136,8 +136,15 @@
     "MNIHLA": {
       "zone": "1",
       "population": "116653",
-      "nb_officines": "3",
+      "nb_officines": "2",
       "liste": [
+        {
+          "ordre": "*",
+          "nom": "FEKI",
+          "prenom": "FATMA",
+          "epouse": "MNIF",
+          "date_inscription": "2008-04-18"
+        },
         {
           "ordre": "1",
           "nom": "MAAZOUN",
@@ -569,8 +576,15 @@
     "BOUMHEL BASSATINE": {
       "zone": "1",
       "population": "50005",
-      "nb_officines": "2",
+      "nb_officines": "1",
       "liste": [
+        {
+          "ordre": "*",
+          "nom": "BELHADJ",
+          "prenom": "OLFA",
+          "epouse": "",
+          "date_inscription": "2004-03-11"
+        },
         {
           "ordre": "1",
           "nom": "RIAHI",
@@ -898,10 +912,18 @@
   },
   "BIZERTE": {
     "AOUSJA": {
-      "zone": "",
-      "population": "",
-      "nb_officines": "",
-      "liste": []
+      "zone": "2",
+      "population": "10535",
+      "nb_officines": "1",
+      "liste": [
+        {
+          "ordre": "1",
+          "nom": "TOUAITI",
+          "prenom": "SKANDER",
+          "epouse": "",
+          "date_inscription": "2022-10-21"
+        }
+      ]
     },
     "BIZERTE": {
       "zone": "2",
@@ -921,20 +943,6 @@
           "prenom": "MOHAMED AMINE",
           "epouse": "",
           "date_inscription": "2019-09-16"
-        },
-        {
-          "ordre": "3",
-          "nom": "DAHMANI",
-          "prenom": "FIRAS",
-          "epouse": "",
-          "date_inscription": "2023-01-25"
-        },
-        {
-          "ordre": "4",
-          "nom": "HADDAD",
-          "prenom": "EDYL",
-          "epouse": "",
-          "date_inscription": "2023-04-17"
         }
       ]
     },
@@ -953,39 +961,10 @@
       ]
     },
     "EL HACHECHNA": {
-      "zone": "2",
-      "population": "17943",
-      "nb_officines": "0",
-      "liste": [
-        {
-          "ordre": "1",
-          "nom": "JEMAA",
-          "prenom": "DHIAEDDINE",
-          "epouse": "",
-          "date_inscription": "2023-01-03"
-        },
-        {
-          "ordre": "2",
-          "nom": "NAJAR",
-          "prenom": "SLIM",
-          "epouse": "",
-          "date_inscription": "2023-01-10"
-        },
-        {
-          "ordre": "3",
-          "nom": "STA",
-          "prenom": "MOHAMED HOUSSEM",
-          "epouse": "",
-          "date_inscription": "2023-01-17"
-        },
-        {
-          "ordre": "4",
-          "nom": "SHIRI",
-          "prenom": "YOUSRI",
-          "epouse": "",
-          "date_inscription": "2023-01-17"
-        }
-      ]
+      "zone": "",
+      "population": "",
+      "nb_officines": "",
+      "liste": []
     },
     "GHAR EL MELH": {
       "zone": "2",
@@ -1230,18 +1209,10 @@
       "liste": []
     },
     "EL HAMMA": {
-      "zone": "2",
-      "population": "60937",
-      "nb_officines": "2",
-      "liste": [
-        {
-          "ordre": "1",
-          "nom": "RHOUMA",
-          "prenom": "EL AZZOUZI",
-          "epouse": "",
-          "date_inscription": "2022-12-12"
-        }
-      ]
+      "zone": "",
+      "population": "",
+      "nb_officines": "",
+      "liste": []
     },
     "EL HAMMA OUEST": {
       "zone": "",
@@ -1407,18 +1378,10 @@
       ]
     },
     "ZARRAT": {
-      "zone": "2",
-      "population": "9439",
-      "nb_officines": "1",
-      "liste": [
-        {
-          "ordre": "1",
-          "nom": "BORGI",
-          "prenom": "SYRINE",
-          "epouse": "",
-          "date_inscription": "2023-01-09"
-        }
-      ]
+      "zone": "",
+      "population": "",
+      "nb_officines": "",
+      "liste": []
     }
   },
   "GAFSA": {
@@ -1590,34 +1553,19 @@
       "nb_officines": "0",
       "liste": [
         {
-          "ordre": "*",
+          "ordre": "1",
           "nom": "SELLAMI",
           "prenom": "GHOFRANE",
           "epouse": "",
           "date_inscription": "2022-01-18"
-        },
-        {
-          "ordre": "1",
-          "nom": "HAFAIEDH",
-          "prenom": "YASSINE",
-          "epouse": "",
-          "date_inscription": "2023-04-11"
         }
       ]
     },
     "BENI MTIR": {
-      "zone": "2",
-      "population": "5344",
-      "nb_officines": "0",
-      "liste": [
-        {
-          "ordre": "1",
-          "nom": "TOUAITI",
-          "prenom": "SKANDER",
-          "epouse": "",
-          "date_inscription": "2023-01-12"
-        }
-      ]
+      "zone": "",
+      "population": "",
+      "nb_officines": "",
+      "liste": []
     },
     "BOU SALEM": {
       "zone": "2",
@@ -1683,18 +1631,10 @@
       ]
     },
     "HAMMAM BOURGUIBA": {
-      "zone": "2",
-      "population": "11623",
-      "nb_officines": "0",
-      "liste": [
-        {
-          "ordre": "1",
-          "nom": "TIRA",
-          "prenom": "MOHAMED SAHBI",
-          "epouse": "",
-          "date_inscription": "2023-04-11"
-        }
-      ]
+      "zone": "",
+      "population": "",
+      "nb_officines": "",
+      "liste": []
     },
     "JENDOUBA": {
       "zone": "2",
@@ -1736,7 +1676,7 @@
       "nb_officines": "0",
       "liste": [
         {
-          "ordre": "*",
+          "ordre": "1",
           "nom": "BOUHOULA",
           "prenom": "RADHOUANE",
           "epouse": "",
@@ -1778,18 +1718,10 @@
       ]
     },
     "TABARKA JADIDA": {
-      "zone": "2",
-      "population": "16636",
-      "nb_officines": "1",
-      "liste": [
-        {
-          "ordre": "1",
-          "nom": "EL BENNA",
-          "prenom": "RAOUA",
-          "epouse": "",
-          "date_inscription": "2023-01-09"
-        }
-      ]
+      "zone": "",
+      "population": "",
+      "nb_officines": "",
+      "liste": []
     }
   },
   "KAIROUAN": {
@@ -1812,10 +1744,18 @@
       "liste": []
     },
     "CHAOUACHI": {
-      "zone": "",
-      "population": "",
-      "nb_officines": "",
-      "liste": []
+      "zone": "2",
+      "population": "11842",
+      "nb_officines": "0",
+      "liste": [
+        {
+          "ordre": "1",
+          "nom": "JAZIRI",
+          "prenom": "SALLOUHA",
+          "epouse": "",
+          "date_inscription": "2022-09-01"
+        }
+      ]
     },
     "CHEBIKA": {
       "zone": "2",
@@ -1891,14 +1831,14 @@
       "nb_officines": "0",
       "liste": [
         {
-          "ordre": "*",
+          "ordre": "1",
           "nom": "ZAHER",
           "prenom": "BOUTHEINA",
           "epouse": "JERFEL",
           "date_inscription": "2021-11-03"
         },
         {
-          "ordre": "1",
+          "ordre": "2",
           "nom": "ALLANI",
           "prenom": "MARWA",
           "epouse": "",
@@ -1949,18 +1889,10 @@
       ]
     },
     "MENZEL MEHIRI": {
-      "zone": "2",
-      "population": "13077",
-      "nb_officines": "1",
-      "liste": [
-        {
-          "ordre": "1",
-          "nom": "KEFI",
-          "prenom": "AHMED",
-          "epouse": "",
-          "date_inscription": "2023-01-16"
-        }
-      ]
+      "zone": "",
+      "population": "",
+      "nb_officines": "",
+      "liste": []
     },
     "OUESLATIA": {
       "zone": "",
@@ -2032,18 +1964,10 @@
   },
   "KASSERINE": {
     "AIN KHEMAISSIA": {
-      "zone": "2",
-      "population": "13238",
-      "nb_officines": "0",
-      "liste": [
-        {
-          "ordre": "1",
-          "nom": "JARRAYA",
-          "prenom": "ABDERRAZAK",
-          "epouse": "",
-          "date_inscription": "2023-03-27"
-        }
-      ]
+      "zone": "",
+      "population": "",
+      "nb_officines": "",
+      "liste": []
     },
     "BOUZKAM": {
       "zone": "",
@@ -2052,32 +1976,16 @@
       "liste": []
     },
     "CHARAI- MACHREK SHAMS": {
-      "zone": "2",
-      "population": "25452",
-      "nb_officines": "0",
-      "liste": [
-        {
-          "ordre": "1",
-          "nom": "AYDI",
-          "prenom": "BILEL",
-          "epouse": "",
-          "date_inscription": "2023-03-27"
-        }
-      ]
+      "zone": "",
+      "population": "",
+      "nb_officines": "",
+      "liste": []
     },
     "EL AYOUN": {
-      "zone": "2",
-      "population": "19828",
-      "nb_officines": "0",
-      "liste": [
-        {
-          "ordre": "1",
-          "nom": "DHAHRI",
-          "prenom": "HICHEM",
-          "epouse": "",
-          "date_inscription": "2023-01-09"
-        }
-      ]
+      "zone": "",
+      "population": "",
+      "nb_officines": "",
+      "liste": []
     },
     "ENNOUR": {
       "zone": "2",
@@ -2177,6 +2085,13 @@
       "liste": [
         {
           "ordre": "1",
+          "nom": "MESSAOUDI",
+          "prenom": "MOHAMED FAHMI",
+          "epouse": "",
+          "date_inscription": "2022-05-11"
+        },
+        {
+          "ordre": "2",
           "nom": "EZZAHER",
           "prenom": "SALAH",
           "epouse": "",
@@ -2223,6 +2138,13 @@
           "prenom": "MOHAMED",
           "epouse": "",
           "date_inscription": "2022-01-17"
+        },
+        {
+          "ordre": "3",
+          "nom": "MKADMI",
+          "prenom": "IHAB",
+          "epouse": "",
+          "date_inscription": "2022-01-26"
         }
       ]
     },
@@ -2232,7 +2154,7 @@
       "nb_officines": "0",
       "liste": [
         {
-          "ordre": "*",
+          "ordre": "1",
           "nom": "DOUSS",
           "prenom": "WIJDAN",
           "epouse": "",
@@ -2241,10 +2163,18 @@
       ]
     },
     "THALA": {
-      "zone": "",
-      "population": "",
-      "nb_officines": "",
-      "liste": []
+      "zone": "2",
+      "population": "39547",
+      "nb_officines": "1",
+      "liste": [
+        {
+          "ordre": "1",
+          "nom": "HIZI",
+          "prenom": "HOUSSEM EDDINE",
+          "epouse": "",
+          "date_inscription": "2021-02-19"
+        }
+      ]
     }
   },
   "KEBILI": {
@@ -2275,18 +2205,10 @@
       ]
     },
     "EL GOLAA": {
-      "zone": "2",
-      "population": "8682",
-      "nb_officines": "1",
-      "liste": [
-        {
-          "ordre": "1",
-          "nom": "BENRHOUMA",
-          "prenom": "FERDAWS",
-          "epouse": "",
-          "date_inscription": "2023-02-14"
-        }
-      ]
+      "zone": "",
+      "population": "",
+      "nb_officines": "",
+      "liste": []
     },
     "FAOUAR": {
       "zone": "",
@@ -2315,18 +2237,10 @@
       ]
     },
     "RJIM MAATOUG": {
-      "zone": "2",
-      "population": "5314",
-      "nb_officines": "0",
-      "liste": [
-        {
-          "ordre": "1",
-          "nom": "MKADMI",
-          "prenom": "IHAB",
-          "epouse": "",
-          "date_inscription": "2023-01-02"
-        }
-      ]
+      "zone": "",
+      "population": "",
+      "nb_officines": "",
+      "liste": []
     },
     "SOUK LAHAD": {
       "zone": "",
@@ -2342,7 +2256,7 @@
       "nb_officines": "0",
       "liste": [
         {
-          "ordre": "*",
+          "ordre": "1",
           "nom": "RACHED",
           "prenom": "NEFAA",
           "epouse": "",
@@ -2467,7 +2381,7 @@
       "nb_officines": "0",
       "liste": [
         {
-          "ordre": "*",
+          "ordre": "1",
           "nom": "ROUACHED",
           "prenom": "RAMI",
           "epouse": "",
@@ -2790,13 +2704,6 @@
           "prenom": "AROUA",
           "epouse": "",
           "date_inscription": "2008-03-29"
-        },
-        {
-          "ordre": "3",
-          "nom": "BEJAOUI",
-          "prenom": "MOHAMED",
-          "epouse": "",
-          "date_inscription": "2023-03-10"
         }
       ]
     },
@@ -2923,13 +2830,6 @@
           "prenom": "INES",
           "epouse": "",
           "date_inscription": "2021-05-06"
-        },
-        {
-          "ordre": "4",
-          "nom": "TOUZRI",
-          "prenom": "HAJER",
-          "epouse": "",
-          "date_inscription": "2023-03-01"
         }
       ]
     },
@@ -3026,18 +2926,10 @@
       "liste": []
     },
     "BOUGHRARA": {
-      "zone": "2",
-      "population": "7383",
-      "nb_officines": "0",
-      "liste": [
-        {
-          "ordre": "1",
-          "nom": "MTIMET",
-          "prenom": "HAJER",
-          "epouse": "",
-          "date_inscription": "2023-03-09"
-        }
-      ]
+      "zone": "",
+      "population": "",
+      "nb_officines": "",
+      "liste": []
     },
     "JERBA AJIM": {
       "zone": "2",
@@ -3050,13 +2942,6 @@
           "prenom": "LAZHAR",
           "epouse": "",
           "date_inscription": "2014-12-03"
-        },
-        {
-          "ordre": "2",
-          "nom": "BEN MIMOUN",
-          "prenom": "MOUSSAAB",
-          "epouse": "",
-          "date_inscription": "2023-01-20"
         }
       ]
     },
@@ -3208,10 +3093,24 @@
       "liste": [
         {
           "ordre": "*",
+          "nom": "EL METAOUA",
+          "prenom": "WYSSEM",
+          "epouse": "",
+          "date_inscription": "2020-12-30"
+        },
+        {
+          "ordre": "1",
           "nom": "ELLOUZI",
           "prenom": "RYM",
           "epouse": "",
           "date_inscription": "2022-02-08"
+        },
+        {
+          "ordre": "2",
+          "nom": "DHAHRI",
+          "prenom": "HICHEM",
+          "epouse": "",
+          "date_inscription": "2022-10-18"
         }
       ]
     },
@@ -3263,18 +3162,10 @@
       ]
     },
     "BENI HASSEN": {
-      "zone": "2",
-      "population": "9288",
-      "nb_officines": "1",
-      "liste": [
-        {
-          "ordre": "1",
-          "nom": "OUANES",
-          "prenom": "MOHAMED HAROUN",
-          "epouse": "",
-          "date_inscription": "2023-01-03"
-        }
-      ]
+      "zone": "",
+      "population": "",
+      "nb_officines": "",
+      "liste": []
     },
     "BENNANE BOUDHER": {
       "zone": "2",
@@ -3496,13 +3387,6 @@
           "prenom": "AMINA",
           "epouse": "",
           "date_inscription": "2021-10-27"
-        },
-        {
-          "ordre": "4",
-          "nom": "AMAMOU",
-          "prenom": "MARIAM",
-          "epouse": "",
-          "date_inscription": "2023-02-01"
         }
       ]
     },
@@ -3814,13 +3698,6 @@
           "prenom": "MAHA",
           "epouse": "",
           "date_inscription": "2012-08-06"
-        },
-        {
-          "ordre": "2",
-          "nom": "LAHMAR",
-          "prenom": "MOHAMED TABAI",
-          "epouse": "",
-          "date_inscription": "2023-04-06"
         }
       ]
     },
@@ -4003,13 +3880,6 @@
           "prenom": "HAYFA",
           "epouse": "",
           "date_inscription": "2022-01-06"
-        },
-        {
-          "ordre": "3",
-          "nom": "BEN REJEB",
-          "prenom": "SIWAR",
-          "epouse": "",
-          "date_inscription": "2023-02-09"
         }
       ]
     },
@@ -4122,13 +3992,6 @@
           "prenom": "YOUSSEF",
           "epouse": "",
           "date_inscription": "2021-12-28"
-        },
-        {
-          "ordre": "5",
-          "nom": "BOUSLAMA",
-          "prenom": "ISMAHEN",
-          "epouse": "",
-          "date_inscription": "2023-03-17"
         }
       ]
     },
@@ -4529,18 +4392,10 @@
       ]
     },
     "KERKENNAH": {
-      "zone": "2",
-      "population": "16395",
-      "nb_officines": "1",
-      "liste": [
-        {
-          "ordre": "1",
-          "nom": "BEN RHOUMA",
-          "prenom": "AHMED",
-          "epouse": "",
-          "date_inscription": "2023-01-04"
-        }
-      ]
+      "zone": "",
+      "population": "",
+      "nb_officines": "",
+      "liste": []
     },
     "MAHRES": {
       "zone": "2",
@@ -4714,13 +4569,6 @@
           "prenom": "AHMED",
           "epouse": "",
           "date_inscription": "2014-05-29"
-        },
-        {
-          "ordre": "2",
-          "nom": "MOALLA",
-          "prenom": "MAHDI",
-          "epouse": "",
-          "date_inscription": "2023-01-24"
         }
       ]
     },
@@ -4775,18 +4623,10 @@
       ]
     },
     "CEBALET OULED ASKER": {
-      "zone": "2",
-      "population": "21722",
-      "nb_officines": "1",
-      "liste": [
-        {
-          "ordre": "1",
-          "nom": "OUESLATI",
-          "prenom": "GHAZI",
-          "epouse": "",
-          "date_inscription": "2023-01-17"
-        }
-      ]
+      "zone": "",
+      "population": "",
+      "nb_officines": "",
+      "liste": []
     },
     "EL ASSOUDA": {
       "zone": "2",
@@ -4815,25 +4655,10 @@
       "liste": []
     },
     "JELMA": {
-      "zone": "2",
-      "population": "26320",
-      "nb_officines": "1",
-      "liste": [
-        {
-          "ordre": "1",
-          "nom": "BACCARI",
-          "prenom": "MOHAMED AMINE",
-          "epouse": "",
-          "date_inscription": "2023-01-03"
-        },
-        {
-          "ordre": "2",
-          "nom": "GUIRAT",
-          "prenom": "IHSEN",
-          "epouse": "",
-          "date_inscription": "2023-04-07"
-        }
-      ]
+      "zone": "",
+      "population": "",
+      "nb_officines": "",
+      "liste": []
     },
     "MANSOURA": {
       "zone": "",
@@ -4842,18 +4667,10 @@
       "liste": []
     },
     "MEKNASSY": {
-      "zone": "2",
-      "population": "24901",
-      "nb_officines": "1",
-      "liste": [
-        {
-          "ordre": "1",
-          "nom": "KHASKHOUSSI",
-          "prenom": "NADINE",
-          "epouse": "",
-          "date_inscription": "2023-02-28"
-        }
-      ]
+      "zone": "",
+      "population": "",
+      "nb_officines": "",
+      "liste": []
     },
     "MENZEL BOUZAIENE": {
       "zone": "",
@@ -5500,13 +5317,6 @@
           "prenom": "WAEL",
           "epouse": "",
           "date_inscription": "2020-01-13"
-        },
-        {
-          "ordre": "13",
-          "nom": "BEN SALEM",
-          "prenom": "DHIA",
-          "epouse": "",
-          "date_inscription": "2023-02-03"
         }
       ]
     },
@@ -5553,7 +5363,7 @@
       "nb_officines": "0",
       "liste": [
         {
-          "ordre": "*",
+          "ordre": "1",
           "nom": "CHARFI",
           "prenom": "NABIL",
           "epouse": "",
@@ -5606,11 +5416,18 @@
       "nb_officines": "0",
       "liste": [
         {
-          "ordre": "*",
+          "ordre": "1",
           "nom": "DAOU",
           "prenom": "MOHAMED",
           "epouse": "",
           "date_inscription": "2022-03-11"
+        },
+        {
+          "ordre": "2",
+          "nom": "BACCARI",
+          "prenom": "MOHAMED AMINE",
+          "epouse": "",
+          "date_inscription": "2022-04-11"
         }
       ]
     }
@@ -5642,7 +5459,7 @@
       "nb_officines": "0",
       "liste": [
         {
-          "ordre": "*",
+          "ordre": "1",
           "nom": "CHAKER",
           "prenom": "FETHI SAADEDDINE",
           "epouse": "",
@@ -5830,13 +5647,6 @@
           "prenom": "INES",
           "epouse": "",
           "date_inscription": "2022-06-13"
-        },
-        {
-          "ordre": "8",
-          "nom": "NASRA",
-          "prenom": "ZEINEB",
-          "epouse": "",
-          "date_inscription": "2022-12-02"
         }
       ]
     },
@@ -5858,13 +5668,6 @@
           "prenom": "KHALED",
           "epouse": "",
           "date_inscription": "2011-06-23"
-        },
-        {
-          "ordre": "3",
-          "nom": "BARKAOUI",
-          "prenom": "AYMEN",
-          "epouse": "",
-          "date_inscription": "2023-04-12"
         }
       ]
     },
