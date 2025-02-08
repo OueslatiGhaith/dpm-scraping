@@ -155,7 +155,7 @@ func extractAttente(page *rod.Page) (*Attente, error) {
 	attente := &Attente{}
 
 	// check for empty state
-	fonts, err := page.Elements("font[color='#000000']")
+	fonts, err := page.Elements("font")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get font elements: %w", err)
 	}
