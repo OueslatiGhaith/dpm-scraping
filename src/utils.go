@@ -9,13 +9,13 @@ import (
 	"github.com/charmbracelet/log"
 )
 
-func writeResults(data ListeAttente, name string) error {
+func writeResults(data ListeAttente, flags *Flags) error {
 	jsonData, err := json.MarshalIndent(data, "", "\t")
 	if err != nil {
 		return fmt.Errorf("Failed to marshal data: %s", err)
 	}
 
-	filename := filepath.Join(RESULTS_DIR, fmt.Sprintf("%s.json", name))
+	filename := filepath.Join(RESULTS_DIR, resultsFileName(flags))
 	if err := os.MkdirAll(RESULTS_DIR, 0755); err != nil {
 		return fmt.Errorf("Failed to create results dir: %s", err)
 	}

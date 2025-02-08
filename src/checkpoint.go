@@ -9,9 +9,9 @@ import (
 	"github.com/charmbracelet/log"
 )
 
-func loadCheckpoint() (*Checkpoint, error) {
+func loadCheckpoint(flags *Flags) (*Checkpoint, error) {
 	log.Debug("Loading checkpoint file")
-	if _, err := os.Stat(CHECKPOINT_FILE); os.IsNotExist(err) {
+	if _, err := os.Stat(checkpointFileName(flags)); os.IsNotExist(err) {
 		log.Debug("Checkpoint file does not exist, creating a new one")
 		return &Checkpoint{
 			LastUpdated:    time.Now(),
@@ -22,7 +22,7 @@ func loadCheckpoint() (*Checkpoint, error) {
 	}
 
 	log.Debug("Checkpoint file exists, loading it")
-	data, err := os.ReadFile(CHECKPOINT_FILE)
+	data, err := os.ReadFile(checkpointFileName(flags))
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func loadCheckpoint() (*Checkpoint, error) {
 	return &checkpoint, nil
 }
 
-func saveCheckpoint(checkpoint *Checkpoint) error {
+func saveCheckpoint(checkpoint *Checkpoint, flags *Flags) error {
 	checkpoint.LastUpdated = time.Now()
 
 	data, err := json.Marshal(checkpoint)
@@ -45,10 +45,10 @@ func saveCheckpoint(checkpoint *Checkpoint) error {
 	}
 
 	// create dir if needed
-	dir := filepath.Dir(CHECKPOINT_FILE)
+	dir := filepath.Dir(checkpointFileName(flags))
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		return err
 	}
 
-	return os.WriteFile(CHECKPOINT_FILE, data, 0644)
+	return os.WriteFile(checkpointFileName(flags), data, 0644)
 }

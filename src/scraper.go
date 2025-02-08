@@ -10,7 +10,7 @@ import (
 	"github.com/go-rod/rod"
 )
 
-func scrapeWaitingList(ctx context.Context, page *rod.Page, checkpoint *Checkpoint) error {
+func scrapeWaitingList(ctx context.Context, page *rod.Page, checkpoint *Checkpoint, flags *Flags) error {
 	log.Info("Navigate to waiting list page")
 	if err := page.Navigate(LISTE_ATTENTE); err != nil {
 		return fmt.Errorf("failed to navigate to waiting list page: %w", err)
@@ -42,7 +42,7 @@ func scrapeWaitingList(ctx context.Context, page *rod.Page, checkpoint *Checkpoi
 		log.Infof("Processing government %s", gov)
 		checkpoint.CurrentGov = gov
 
-		if err := processGouvernourat(ctx, page, gov, checkpoint); err != nil {
+		if err := processGouvernourat(ctx, page, gov, checkpoint, flags); err != nil {
 			return fmt.Errorf("failed to process government %s: %w", gov, err)
 		}
 
@@ -52,7 +52,7 @@ func scrapeWaitingList(ctx context.Context, page *rod.Page, checkpoint *Checkpoi
 		checkpoint.CurrentDel = ""
 
 		// save checkpoint after each government
-		if err := saveCheckpoint(checkpoint); err != nil {
+		if err := saveCheckpoint(checkpoint, flags); err != nil {
 			return fmt.Errorf("failed to save checkpoint: %w", err)
 		}
 	}
@@ -60,16 +60,11 @@ func scrapeWaitingList(ctx context.Context, page *rod.Page, checkpoint *Checkpoi
 	return nil
 }
 
-func processGouvernourat(ctx context.Context, page *rod.Page, gov string, checkpoint *Checkpoint) error {
+func processGouvernourat(ctx context.Context, page *rod.Page, gov string, checkpoint *Checkpoint, flags *Flags) error {
 	// navigate to the main page and select the gouvernourat
-	if err := page.Navigate(LISTE_ATTENTE); err != nil {
-		return fmt.Errorf("failed to navigate to main page: %w", err)
+	if err := navigateToGouvernourat(page, gov, flags); err != nil {
+		return fmt.Errorf("failed to navigate to gouvernourat: %w", err)
 	}
-
-	// select gouvernourat and JOUR option
-	page.MustElement("select[name='cod_gouv']").MustSelect(gov)
-	page.MustElement("input[value='ON']").MustClick()
-	page.MustElement("input[type='submit']").MustClick()
 
 	// waiting for delegations select to be ready
 	delSelect := page.MustElement("select[name='cod_del']")
@@ -102,8 +97,8 @@ func processGouvernourat(ctx context.Context, page *rod.Page, gov string, checkp
 		}
 
 		log.Infof("\tProcessing delegation %s", del)
-		if err := processDelegation(page, gov, del, checkpoint); err != nil {
-			if saveErr := saveCheckpoint(checkpoint); saveErr != nil {
+		if err := processDelegation(page, gov, del, checkpoint, flags); err != nil {
+			if saveErr := saveCheckpoint(checkpoint, flags); saveErr != nil {
 				log.Errorf("Failed to save checkpoint: %s", saveErr)
 			}
 			return fmt.Errorf("failed to process delegation %s: %w", del, err)
@@ -116,7 +111,7 @@ func processGouvernourat(ctx context.Context, page *rod.Page, gov string, checkp
 		checkpoint.ProcessedDels[gov] = append(checkpoint.ProcessedDels[gov], del)
 
 		// save checkpoint after each delegation
-		if err := saveCheckpoint(checkpoint); err != nil {
+		if err := saveCheckpoint(checkpoint, flags); err != nil {
 			return fmt.Errorf("failed to save checkpoint: %w", err)
 		}
 	}
@@ -124,22 +119,11 @@ func processGouvernourat(ctx context.Context, page *rod.Page, gov string, checkp
 	return nil
 }
 
-func processDelegation(page *rod.Page, gov, del string, checkpoint *Checkpoint) error {
+func processDelegation(page *rod.Page, gov, del string, checkpoint *Checkpoint, flags *Flags) error {
 	// navigate to the main page and select the gouvernourat
-	if err := page.Navigate(LISTE_ATTENTE); err != nil {
-		return fmt.Errorf("failed to navigate to main page: %w", err)
+	if err := navigateToGouvernourat(page, gov, flags); err != nil {
+		return fmt.Errorf("failed to navigate to gouvernourat: %w", err)
 	}
-
-	// wait for the page to be ready
-	page.MustWaitLoad()
-
-	// select gouvernourat and JOUR option
-	page.MustElement("select[name='cod_gouv']").MustSelect(gov)
-	page.MustElement("input[value='ON']").MustClick()
-	page.MustElement("input[type='submit']").MustClick()
-
-	// wait for the page to be ready
-	page.MustWaitLoad()
 
 	// select delegation
 	page.MustElement("select[name='cod_del']").MustSelect(del)
@@ -249,4 +233,30 @@ func extractAttente(page *rod.Page) (*Attente, error) {
 	}
 
 	return attente, nil
+}
+
+func navigateToGouvernourat(page *rod.Page, gouvernourat string, flags *Flags) error {
+	// navigate to the main page and select the gouvernourat
+	if err := page.Navigate(OFFICINE); err != nil {
+		return fmt.Errorf("failed to navigate to main page: %w", err)
+	}
+
+	// select gouvernourat and JOUR option
+	page.MustElement("select[name='cod_gouv']").MustSelect(gouvernourat)
+
+	switch flags.Time {
+	case TIME_JOUR:
+		page.MustElement("input[value='ON']").MustClick()
+	case TIME_NUIT:
+		page.MustElement("input[value='OFF']").MustClick()
+	default:
+		return fmt.Errorf("invalid time: %d", flags.Time)
+	}
+
+	page.MustElement("input[type='submit']").MustClick()
+
+	// wait for the page to be ready
+	page.MustWaitLoad()
+
+	return nil
 }

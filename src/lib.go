@@ -14,9 +14,11 @@ import (
 func Main() {
 	log.SetLevel(log.DebugLevel)
 
+	flags := parseFlags()
+
 	// load or create checkpoint
 	log.Info("Loading or creating checkpoint file")
-	checkpoint, err := loadCheckpoint()
+	checkpoint, err := loadCheckpoint(flags)
 	if err != nil {
 		log.Error("Failed to load checkpoint")
 		log.Fatal(err)
@@ -47,7 +49,7 @@ func Main() {
 
 	// run scraper in goroutine
 	go func() {
-		errChan <- scrapeWaitingList(ctx, page, checkpoint)
+		errChan <- scrapeWaitingList(ctx, page, checkpoint, flags)
 	}()
 
 	// wait  for either completion or interruption
@@ -60,19 +62,19 @@ func Main() {
 		}
 
 		log.Info("Writing results")
-		if err := writeResults(checkpoint.PartialResults, "JOUR"); err != nil {
+		if err := writeResults(checkpoint.PartialResults, flags); err != nil {
 			log.Error("Failed to write results")
 			log.Fatal(err)
 		}
 
 		// cleanup checkpoint file on success
-		if err := os.Remove(CHECKPOINT_FILE); err != nil {
+		if err := os.Remove(checkpointFileName(flags)); err != nil {
 			log.Error("Failed to remove checkpoint file")
 			log.Error(err)
 		}
 	case sig := <-sigChan:
 		log.Infof("Received signal %s, saving checkpoint and exiting", sig)
-		if err := saveCheckpoint(checkpoint); err != nil {
+		if err := saveCheckpoint(checkpoint, flags); err != nil {
 			log.Error("Failed to save checkpoint")
 		}
 		os.Exit(1)
