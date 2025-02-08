@@ -180,11 +180,11 @@ func extractOfficines(page *rod.Page) ([]*Officine, error) {
 
 			switch j {
 			case 0:
-				officine.Nom = text
+				officine.Nom = strings.TrimSpace(text)
 			case 1:
-				officine.Adresse = text
+				officine.Adresse = strings.TrimSpace(text)
 			case 2:
-				officine.Telephone = text
+				officine.Telephone = strings.TrimSpace(text)
 			}
 		}
 
