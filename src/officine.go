@@ -27,48 +27,41 @@ func scrapeOfficines(ctx context.Context, page *rod.Page, checkpoint *Checkpoint
 	}
 
 	for _, gov := range gouvernourats {
-		for _, jourNuit := range []string{JOUR, NUIT} { // Process both JOUR and NUIT
-			select {
-			case <-ctx.Done():
-				return fmt.Errorf("context cancelled")
-			default:
-			}
+		select {
+		case <-ctx.Done():
+			return fmt.Errorf("context cancelled")
+		default:
+		}
 
-			key := fmt.Sprintf("%s-%s", gov, jourNuit)
-			if _, ok := checkpoint.ProcessedGovs[key]; ok {
-				log.Warnf("\tGovernment %s (%s) already processed for officines, skipping", gov, jourNuit)
-				continue
-			}
+		if _, ok := checkpoint.ProcessedGovs[gov]; ok {
+			log.Warnf("\tGovernment %s already processed, skipping", gov)
+			continue
+		}
 
-			log.Infof("Processing government %s (%s) for officines", gov, jourNuit)
-			checkpoint.CurrentGov = key
+		log.Infof("Processing government %s", gov)
+		checkpoint.CurrentGov = gov
 
-			if err := processOfficines(ctx, page, gov, jourNuit, checkpoint, flags); err != nil {
-				return fmt.Errorf("failed to process government %s (%s): %w", gov, jourNuit, err)
-			}
+		if err := processOfficines(ctx, page, gov, checkpoint, flags); err != nil {
+			return fmt.Errorf("failed to process government %s: %w", gov, err)
+		}
 
-			checkpoint.ProcessedGovs[key] = true
-			checkpoint.CurrentGov = ""
-			checkpoint.CurrentDel = ""
+		checkpoint.ProcessedGovs[gov] = true
+		checkpoint.CurrentGov = ""
+		checkpoint.CurrentDel = ""
 
-			// Save checkpoint after each government
-			if err := saveCheckpoint(checkpoint, flags); err != nil {
-				return fmt.Errorf("failed to save checkpoint: %w", err)
-			}
+		// Save checkpoint after each government
+		if err := saveCheckpoint(checkpoint, flags); err != nil {
+			return fmt.Errorf("failed to save checkpoint: %w", err)
 		}
 	}
 
 	return nil
 }
 
-func processOfficines(ctx context.Context, page *rod.Page, gov, jourNuit string, checkpoint *Checkpoint, flags *Flags) error {
-	if err := page.Navigate(OFFICINE); err != nil {
+func processOfficines(ctx context.Context, page *rod.Page, gov string, checkpoint *Checkpoint, flags *Flags) error {
+	if err := navigateToGouvernourat(page, OFFICINE, gov, flags); err != nil {
 		return fmt.Errorf("failed to navigate to main page: %w", err)
 	}
-
-	page.MustElement("select[name='cod_gouv']").MustSelect(gov)
-	page.MustElement(fmt.Sprintf("input[value='%s']", jourNuit)).MustClick()
-	page.MustElement("input[type='submit']").MustClick()
 
 	delSelect := page.MustElement("select[name='cod_del']")
 	options := delSelect.MustElements("option")
@@ -80,9 +73,8 @@ func processOfficines(ctx context.Context, page *rod.Page, gov, jourNuit string,
 		delegations = append(delegations, del)
 	}
 
-	key := fmt.Sprintf("%s-%s", gov, jourNuit)
-	if checkpoint.PartialResultsOfficine[key] == nil {
-		checkpoint.PartialResultsOfficine[key] = make(map[string][]*Officine)
+	if checkpoint.PartialResultsOfficine[gov] == nil {
+		checkpoint.PartialResultsOfficine[gov] = make(map[string][]*Officine)
 	}
 
 	for _, del := range delegations {
@@ -92,23 +84,23 @@ func processOfficines(ctx context.Context, page *rod.Page, gov, jourNuit string,
 		default:
 		}
 
-		if slices.Contains(checkpoint.ProcessedDels[key], del) {
-			log.Warnf("Delegation %s (%s) already processed, skipping", del, jourNuit)
+		if slices.Contains(checkpoint.ProcessedDels[gov], del) {
+			log.Warnf("Delegation %s already processed, skipping", del)
 			continue
 		}
 
-		log.Infof("\tProcessing delegation %s (%s) for officines", del, jourNuit)
-		if err := processOfficineDelegation(page, gov, del, jourNuit, checkpoint); err != nil {
+		log.Infof("\tProcessing delegation %s", del)
+		if err := processOfficineDelegation(page, gov, del, checkpoint, flags); err != nil {
 			if saveErr := saveCheckpoint(checkpoint, flags); saveErr != nil {
 				log.Errorf("Failed to save checkpoint: %s", saveErr)
 			}
-			return fmt.Errorf("failed to process delegation %s (%s): %w", del, jourNuit, err)
+			return fmt.Errorf("failed to process delegation %s: %w", del, err)
 		}
 
-		if checkpoint.ProcessedDels[key] == nil {
-			checkpoint.ProcessedDels[key] = make([]string, 0)
+		if checkpoint.ProcessedDels[gov] == nil {
+			checkpoint.ProcessedDels[gov] = make([]string, 0)
 		}
-		checkpoint.ProcessedDels[key] = append(checkpoint.ProcessedDels[key], del)
+		checkpoint.ProcessedDels[gov] = append(checkpoint.ProcessedDels[gov], del)
 
 		if err := saveCheckpoint(checkpoint, flags); err != nil {
 			return fmt.Errorf("failed to save checkpoint: %w", err)
@@ -118,15 +110,10 @@ func processOfficines(ctx context.Context, page *rod.Page, gov, jourNuit string,
 	return nil
 }
 
-func processOfficineDelegation(page *rod.Page, gov, del, jourNuit string, checkpoint *Checkpoint) error {
-	if err := page.Navigate(OFFICINE); err != nil {
+func processOfficineDelegation(page *rod.Page, gov, del string, checkpoint *Checkpoint, flags *Flags) error {
+	if err := navigateToGouvernourat(page, OFFICINE, gov, flags); err != nil {
 		return fmt.Errorf("failed to navigate to main page: %w", err)
 	}
-
-	page.MustWaitLoad()
-	page.MustElement("select[name='cod_gouv']").MustSelect(gov)
-	page.MustElement(fmt.Sprintf("input[value='%s']", jourNuit)).MustClick()
-	page.MustElement("input[type='submit']").MustClick()
 
 	page.MustWaitLoad()
 	page.MustElement("select[name='cod_del']").MustSelect(del)
@@ -139,11 +126,10 @@ func processOfficineDelegation(page *rod.Page, gov, del, jourNuit string, checkp
 		return fmt.Errorf("failed to extract officines: %w", err)
 	}
 
-	key := fmt.Sprintf("%s-%s", gov, jourNuit)
-	if checkpoint.PartialResultsOfficine[key] == nil {
-		checkpoint.PartialResultsOfficine[key] = make(map[string][]*Officine)
+	if checkpoint.PartialResultsOfficine[gov] == nil {
+		checkpoint.PartialResultsOfficine[gov] = make(map[string][]*Officine)
 	}
-	checkpoint.PartialResultsOfficine[key][del] = officines
+	checkpoint.PartialResultsOfficine[gov][del] = officines
 
 	return nil
 }

@@ -63,7 +63,7 @@ func scrapeWaitingList(ctx context.Context, page *rod.Page, checkpoint *Checkpoi
 
 func processGouvernourat(ctx context.Context, page *rod.Page, gov string, checkpoint *Checkpoint, flags *Flags) error {
 	// navigate to the main page and select the gouvernourat
-	if err := navigateToGouvernourat(page, gov, flags); err != nil {
+	if err := navigateToGouvernourat(page, LISTE_ATTENTE, gov, flags); err != nil {
 		return fmt.Errorf("failed to navigate to gouvernourat: %w", err)
 	}
 
@@ -122,7 +122,7 @@ func processGouvernourat(ctx context.Context, page *rod.Page, gov string, checkp
 
 func processDelegation(page *rod.Page, gov, del string, checkpoint *Checkpoint, flags *Flags) error {
 	// navigate to the main page and select the gouvernourat
-	if err := navigateToGouvernourat(page, gov, flags); err != nil {
+	if err := navigateToGouvernourat(page, LISTE_ATTENTE, gov, flags); err != nil {
 		return fmt.Errorf("failed to navigate to gouvernourat: %w", err)
 	}
 
@@ -234,37 +234,4 @@ func extractAttente(page *rod.Page) (*Attente, error) {
 	}
 
 	return attente, nil
-}
-
-func navigateToGouvernourat(page *rod.Page, gouvernourat string, flags *Flags) error {
-	// navigate to the main page and select the gouvernourat
-	log.Debugf("Navigating to gouvernourat %s", gouvernourat)
-	if err := page.Navigate(LISTE_ATTENTE); err != nil {
-		return fmt.Errorf("failed to navigate to main page: %w", err)
-	}
-
-	// select gouvernourat and JOUR option
-	log.Debugf("Selecting gouvernourat %s", gouvernourat)
-	page.MustElement("select[name='cod_gouv']").MustSelect(gouvernourat)
-
-	switch flags.Time {
-	case TIME_JOUR:
-		log.Debugf("Selecting time JOUR")
-		page.MustElement("input[value='ON']").MustClick()
-	case TIME_NUIT:
-		log.Debugf("Selecting time NUIT")
-		page.MustElement("input[value='OFF']").MustClick()
-	default:
-		return fmt.Errorf("invalid time: %d", flags.Time)
-	}
-
-	log.Debugf("Submitting form")
-	page.MustElement("input[type='submit']").MustClick()
-
-	// wait for the page to be ready
-	log.Debugf("Waiting for page to be ready")
-	page.MustWaitLoad()
-
-	log.Debugf("Page ready")
-	return nil
 }
