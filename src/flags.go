@@ -7,8 +7,9 @@ import (
 )
 
 type Flags struct {
-	Mode uint8
-	Time uint8
+	Debug bool
+	Mode  uint8
+	Time  uint8
 }
 
 const (
@@ -22,6 +23,7 @@ const (
 )
 
 func parseFlags() *Flags {
+	debug := flag.Bool("debug", false, "Enable debug mode")
 	mode := flag.String("mode", "attente", "Mode: attente OR officine")
 	time := flag.String("time", "jour", "Time: jour OR nuit")
 	flag.Parse()
@@ -34,7 +36,9 @@ func parseFlags() *Flags {
 		log.Fatal("Invalid time, must be 'jour' or 'nuit'")
 	}
 
-	flags := &Flags{}
+	flags := &Flags{
+		Debug: *debug,
+	}
 
 	switch *mode {
 	case "attente":

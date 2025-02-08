@@ -11,14 +11,15 @@ import (
 )
 
 func scrapeWaitingList(ctx context.Context, page *rod.Page, checkpoint *Checkpoint, flags *Flags) error {
-	log.Info("Navigate to waiting list page")
+	log.Infof("Navigate to %s", LISTE_ATTENTE)
 	if err := page.Navigate(LISTE_ATTENTE); err != nil {
-		return fmt.Errorf("failed to navigate to waiting list page: %w", err)
+		return fmt.Errorf("failed to navigate to %s: %w", LISTE_ATTENTE, err)
 	}
 
-	log.Debug("Getting list of governments")
+	log.Debug("Getting list of gouvernourats")
 	govSelect := page.MustElement("select[name='cod_gouv']")
 	options := govSelect.MustElements("option")
+	log.Debugf("Got %d gouvernourats", len(options))
 
 	var gouvernourats []string
 	for _, opt := range options {
@@ -35,15 +36,15 @@ func scrapeWaitingList(ctx context.Context, page *rod.Page, checkpoint *Checkpoi
 
 		// skip if already processed
 		if _, ok := checkpoint.ProcessedGovs[gov]; ok {
-			log.Warnf("\tGovernment %s already processed, skipping", gov)
+			log.Warnf("\tGouvernourat %s already processed, skipping", gov)
 			continue
 		}
 
-		log.Infof("Processing government %s", gov)
+		log.Infof("Processing gouvernourat %s", gov)
 		checkpoint.CurrentGov = gov
 
 		if err := processGouvernourat(ctx, page, gov, checkpoint, flags); err != nil {
-			return fmt.Errorf("failed to process government %s: %w", gov, err)
+			return fmt.Errorf("failed to process gouvernourat %s: %w", gov, err)
 		}
 
 		// mark gouvernourat as processed
@@ -126,10 +127,12 @@ func processDelegation(page *rod.Page, gov, del string, checkpoint *Checkpoint, 
 	}
 
 	// select delegation
+	log.Debugf("Selecting delegation %s", del)
 	page.MustElement("select[name='cod_del']").MustSelect(del)
 	page.MustElement("input[type='submit']").MustClick()
 
 	// wait for the page to be ready
+	log.Debugf("Waiting for page to be ready")
 	page.MustWaitLoad()
 
 	attente, err := extractAttente(page)
@@ -147,6 +150,8 @@ func processDelegation(page *rod.Page, gov, del string, checkpoint *Checkpoint, 
 }
 
 func extractAttente(page *rod.Page) (*Attente, error) {
+	log.Debug("Extracting attente")
+
 	attente := &Attente{}
 
 	// check for empty state
@@ -155,6 +160,7 @@ func extractAttente(page *rod.Page) (*Attente, error) {
 		return nil, fmt.Errorf("failed to get font elements: %w", err)
 	}
 
+	log.Debugf("Got %d font elements", len(fonts))
 	for _, font := range fonts {
 		text, err := font.Text()
 		if err != nil {
@@ -166,20 +172,14 @@ func extractAttente(page *rod.Page) (*Attente, error) {
 	}
 
 	// extract zone, population, nb_officines using XPath
-	zone, err := page.ElementX(`/html/body/table/tbody/tr[1]/td/p/font/b/b/font[2]`)
-	if err == nil {
-		attente.Zone, _ = zone.Text()
-	}
+	attente.Zone = getByXPath(page, `/html/body/table/tbody/tr[1]/td/p/font/b/b/font[2]`)
+	log.Debug("Extracted zone")
 
-	population, err := page.ElementX(`/html/body/table/tbody/tr[1]/td/p/font/b/b/b/font[2]`)
-	if err == nil {
-		attente.Population, _ = population.Text()
-	}
+	attente.Population = getByXPath(page, "/html/body/table/tbody/tr[1]/td/p/font/b/b/b/font[2]")
+	log.Debug("Extracted population")
 
-	nbOfficines, err := page.ElementX(`/html/body/table/tbody/tr[1]/td/p/font/b/b/b/b/font[2]`)
-	if err == nil {
-		attente.NbOfficines, _ = nbOfficines.Text()
-	}
+	attente.NbOfficines = getByXPath(page, "/html/body/table/tbody/tr[1]/td/p/font/b/b/b/b/font[2]")
+	log.Debug("Extracted nbOfficines")
 
 	// get waiting list from last table
 	table, err := page.Elements("table:last-child")
@@ -189,6 +189,7 @@ func extractAttente(page *rod.Page) (*Attente, error) {
 	if len(table) == 0 {
 		return nil, fmt.Errorf("no table found")
 	}
+	log.Debugf("Got %d tables", len(table))
 
 	lastTable := table[len(table)-1]
 	rows, err := lastTable.Elements("tr")
@@ -237,26 +238,33 @@ func extractAttente(page *rod.Page) (*Attente, error) {
 
 func navigateToGouvernourat(page *rod.Page, gouvernourat string, flags *Flags) error {
 	// navigate to the main page and select the gouvernourat
-	if err := page.Navigate(OFFICINE); err != nil {
+	log.Debugf("Navigating to gouvernourat %s", gouvernourat)
+	if err := page.Navigate(LISTE_ATTENTE); err != nil {
 		return fmt.Errorf("failed to navigate to main page: %w", err)
 	}
 
 	// select gouvernourat and JOUR option
+	log.Debugf("Selecting gouvernourat %s", gouvernourat)
 	page.MustElement("select[name='cod_gouv']").MustSelect(gouvernourat)
 
 	switch flags.Time {
 	case TIME_JOUR:
+		log.Debugf("Selecting time JOUR")
 		page.MustElement("input[value='ON']").MustClick()
 	case TIME_NUIT:
+		log.Debugf("Selecting time NUIT")
 		page.MustElement("input[value='OFF']").MustClick()
 	default:
 		return fmt.Errorf("invalid time: %d", flags.Time)
 	}
 
+	log.Debugf("Submitting form")
 	page.MustElement("input[type='submit']").MustClick()
 
 	// wait for the page to be ready
+	log.Debugf("Waiting for page to be ready")
 	page.MustWaitLoad()
 
+	log.Debugf("Page ready")
 	return nil
 }

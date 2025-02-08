@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"github.com/charmbracelet/log"
+	"github.com/go-rod/rod"
 )
 
 func writeResults(data *Checkpoint, flags *Flags) error {
@@ -36,4 +38,18 @@ func writeResults(data *Checkpoint, flags *Flags) error {
 	log.Infof("Wrote results to %s", filename)
 
 	return nil
+}
+
+func getByXPath(page *rod.Page, xPath string) string {
+	return page.MustEval(fmt.Sprintf(`function() { 
+		return document.evaluate("%s", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent; 
+	}`, xPath)).String()
+}
+
+func toInt(s string) int {
+	i, err := strconv.Atoi(s)
+	if err != nil {
+		log.Fatalf("Failed to convert %s to int: %s", s, err)
+	}
+	return i
 }

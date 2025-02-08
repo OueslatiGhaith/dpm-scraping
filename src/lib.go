@@ -12,9 +12,11 @@ import (
 )
 
 func Main() {
-	log.SetLevel(log.DebugLevel)
-
 	flags := parseFlags()
+
+	if flags.Debug {
+		log.SetLevel(log.DebugLevel)
+	}
 
 	// load or create checkpoint
 	log.Info("Loading or creating checkpoint file")
@@ -24,7 +26,7 @@ func Main() {
 		log.Fatal(err)
 	}
 
-	log.Info("Initializing Rod")
+	log.Debug("Initializing Rod")
 	u := launcher.New().Headless(true).Set("--disable-gpu").Set("--no-sandbox").MustLaunch()
 	browser := rod.New().ControlURL(u).MustConnect()
 	defer browser.MustClose()
@@ -51,8 +53,10 @@ func Main() {
 	go func() {
 		switch flags.Mode {
 		case MODE_ATTENTE:
+			log.Info("Scraping liste d'attente")
 			errChan <- scrapeWaitingList(ctx, page, checkpoint, flags)
 		case MODE_OFFICINE:
+			log.Info("Scraping officines")
 			errChan <- scrapeOfficines(ctx, page, checkpoint, flags)
 		}
 	}()
