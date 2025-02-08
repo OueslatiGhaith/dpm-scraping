@@ -2,7 +2,8 @@ package src
 
 import (
 	"flag"
-	"log"
+
+	"github.com/charmbracelet/log"
 )
 
 type Flags struct {
@@ -29,7 +30,7 @@ func parseFlags() *Flags {
 		log.Fatal("Invalid mode, must be 'attente' or 'officine'")
 	}
 
-	if *time != "JOUR" && *time != "NUIT" {
+	if *time != "jour" && *time != "nuit" {
 		log.Fatal("Invalid time, must be 'jour' or 'nuit'")
 	}
 

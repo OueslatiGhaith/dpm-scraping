@@ -49,7 +49,12 @@ func Main() {
 
 	// run scraper in goroutine
 	go func() {
-		errChan <- scrapeWaitingList(ctx, page, checkpoint, flags)
+		switch flags.Mode {
+		case MODE_ATTENTE:
+			errChan <- scrapeWaitingList(ctx, page, checkpoint, flags)
+		case MODE_OFFICINE:
+			errChan <- scrapeOfficines(ctx, page, checkpoint, flags)
+		}
 	}()
 
 	// wait  for either completion or interruption
@@ -62,7 +67,7 @@ func Main() {
 		}
 
 		log.Info("Writing results")
-		if err := writeResults(checkpoint.PartialResults, flags); err != nil {
+		if err := writeResults(checkpoint, flags); err != nil {
 			log.Error("Failed to write results")
 			log.Fatal(err)
 		}

@@ -78,8 +78,8 @@ func processGouvernourat(ctx context.Context, page *rod.Page, gov string, checkp
 	}
 
 	// initialize map for this gouvernourat if needed
-	if checkpoint.PartialResults[gov] == nil {
-		checkpoint.PartialResults[gov] = make(map[string]*Attente)
+	if checkpoint.PartialResultsAttente[gov] == nil {
+		checkpoint.PartialResultsAttente[gov] = make(map[string]*Attente)
 	}
 
 	// process each delegation
@@ -138,10 +138,10 @@ func processDelegation(page *rod.Page, gov, del string, checkpoint *Checkpoint, 
 	}
 
 	// store in checkpoint
-	if checkpoint.PartialResults[gov] == nil {
-		checkpoint.PartialResults[gov] = make(map[string]*Attente)
+	if checkpoint.PartialResultsAttente[gov] == nil {
+		checkpoint.PartialResultsAttente[gov] = make(map[string]*Attente)
 	}
-	checkpoint.PartialResults[gov][del] = attente
+	checkpoint.PartialResultsAttente[gov][del] = attente
 
 	return nil
 }

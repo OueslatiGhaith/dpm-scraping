@@ -1,0 +1,209 @@
+package src
+
+import (
+	"context"
+	"fmt"
+	"slices"
+	"strings"
+
+	"github.com/charmbracelet/log"
+	"github.com/go-rod/rod"
+)
+
+func scrapeOfficines(ctx context.Context, page *rod.Page, checkpoint *Checkpoint, flags *Flags) error {
+	log.Info("Navigating to officine page")
+	if err := page.Navigate(OFFICINE); err != nil {
+		return fmt.Errorf("failed to navigate to officine page: %w", err)
+	}
+
+	log.Debug("Getting list of governments")
+	govSelect := page.MustElement("select[name='cod_gouv']")
+	options := govSelect.MustElements("option")
+
+	var gouvernourats []string
+	for _, opt := range options {
+		gov := opt.MustText()
+		gouvernourats = append(gouvernourats, gov)
+	}
+
+	for _, gov := range gouvernourats {
+		for _, jourNuit := range []string{JOUR, NUIT} { // Process both JOUR and NUIT
+			select {
+			case <-ctx.Done():
+				return fmt.Errorf("context cancelled")
+			default:
+			}
+
+			key := fmt.Sprintf("%s-%s", gov, jourNuit)
+			if _, ok := checkpoint.ProcessedGovs[key]; ok {
+				log.Warnf("\tGovernment %s (%s) already processed for officines, skipping", gov, jourNuit)
+				continue
+			}
+
+			log.Infof("Processing government %s (%s) for officines", gov, jourNuit)
+			checkpoint.CurrentGov = key
+
+			if err := processOfficines(ctx, page, gov, jourNuit, checkpoint, flags); err != nil {
+				return fmt.Errorf("failed to process government %s (%s): %w", gov, jourNuit, err)
+			}
+
+			checkpoint.ProcessedGovs[key] = true
+			checkpoint.CurrentGov = ""
+			checkpoint.CurrentDel = ""
+
+			// Save checkpoint after each government
+			if err := saveCheckpoint(checkpoint, flags); err != nil {
+				return fmt.Errorf("failed to save checkpoint: %w", err)
+			}
+		}
+	}
+
+	return nil
+}
+
+func processOfficines(ctx context.Context, page *rod.Page, gov, jourNuit string, checkpoint *Checkpoint, flags *Flags) error {
+	if err := page.Navigate(OFFICINE); err != nil {
+		return fmt.Errorf("failed to navigate to main page: %w", err)
+	}
+
+	page.MustElement("select[name='cod_gouv']").MustSelect(gov)
+	page.MustElement(fmt.Sprintf("input[value='%s']", jourNuit)).MustClick()
+	page.MustElement("input[type='submit']").MustClick()
+
+	delSelect := page.MustElement("select[name='cod_del']")
+	options := delSelect.MustElements("option")
+
+	log.Debug("Getting list of delegations")
+	var delegations []string
+	for _, opt := range options {
+		del := opt.MustText()
+		delegations = append(delegations, del)
+	}
+
+	key := fmt.Sprintf("%s-%s", gov, jourNuit)
+	if checkpoint.PartialResultsOfficine[key] == nil {
+		checkpoint.PartialResultsOfficine[key] = make(map[string][]*Officine)
+	}
+
+	for _, del := range delegations {
+		select {
+		case <-ctx.Done():
+			return fmt.Errorf("context cancelled")
+		default:
+		}
+
+		if slices.Contains(checkpoint.ProcessedDels[key], del) {
+			log.Warnf("Delegation %s (%s) already processed, skipping", del, jourNuit)
+			continue
+		}
+
+		log.Infof("\tProcessing delegation %s (%s) for officines", del, jourNuit)
+		if err := processOfficineDelegation(page, gov, del, jourNuit, checkpoint); err != nil {
+			if saveErr := saveCheckpoint(checkpoint, flags); saveErr != nil {
+				log.Errorf("Failed to save checkpoint: %s", saveErr)
+			}
+			return fmt.Errorf("failed to process delegation %s (%s): %w", del, jourNuit, err)
+		}
+
+		if checkpoint.ProcessedDels[key] == nil {
+			checkpoint.ProcessedDels[key] = make([]string, 0)
+		}
+		checkpoint.ProcessedDels[key] = append(checkpoint.ProcessedDels[key], del)
+
+		if err := saveCheckpoint(checkpoint, flags); err != nil {
+			return fmt.Errorf("failed to save checkpoint: %w", err)
+		}
+	}
+
+	return nil
+}
+
+func processOfficineDelegation(page *rod.Page, gov, del, jourNuit string, checkpoint *Checkpoint) error {
+	if err := page.Navigate(OFFICINE); err != nil {
+		return fmt.Errorf("failed to navigate to main page: %w", err)
+	}
+
+	page.MustWaitLoad()
+	page.MustElement("select[name='cod_gouv']").MustSelect(gov)
+	page.MustElement(fmt.Sprintf("input[value='%s']", jourNuit)).MustClick()
+	page.MustElement("input[type='submit']").MustClick()
+
+	page.MustWaitLoad()
+	page.MustElement("select[name='cod_del']").MustSelect(del)
+	page.MustElement("input[type='submit']").MustClick()
+
+	page.MustWaitLoad()
+
+	officines, err := extractOfficines(page)
+	if err != nil {
+		return fmt.Errorf("failed to extract officines: %w", err)
+	}
+
+	key := fmt.Sprintf("%s-%s", gov, jourNuit)
+	if checkpoint.PartialResultsOfficine[key] == nil {
+		checkpoint.PartialResultsOfficine[key] = make(map[string][]*Officine)
+	}
+	checkpoint.PartialResultsOfficine[key][del] = officines
+
+	return nil
+}
+
+func extractOfficines(page *rod.Page) ([]*Officine, error) {
+	officines := make([]*Officine, 0)
+
+	// Check if the page contains "Aucune officine installée dans cette zone"
+	body, err := page.Element("body")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get body element: %w", err)
+	}
+
+	font, err := body.Element("font")
+	if err == nil { // If font exists, check its text
+		text, _ := font.Text()
+		if strings.TrimSpace(text) == "Aucune officine installée dans cette zone" {
+			return officines, nil // Return empty list
+		}
+	}
+
+	// Find the last table in the body
+	tables, err := page.Elements("table")
+	if err != nil || len(tables) == 0 {
+		return nil, fmt.Errorf("failed to find tables: %w", err)
+	}
+
+	lastTable := tables[len(tables)-1] // Select last table
+	rows, err := lastTable.Elements("tr")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get table rows: %w", err)
+	}
+
+	// Loop through table rows, skipping the header row
+	for i := 1; i < len(rows); i++ {
+		cells, err := rows[i].Elements("td")
+		if err != nil || len(cells) < 3 {
+			continue
+		}
+
+		officine := &Officine{
+			Ordre: fmt.Sprint(i),
+		}
+
+		// Assign values based on column index
+		for j, cell := range cells {
+			text, _ := cell.Text()
+
+			switch j {
+			case 0:
+				officine.Nom = text
+			case 1:
+				officine.Adresse = text
+			case 2:
+				officine.Telephone = text
+			}
+		}
+
+		officines = append(officines, officine)
+	}
+
+	return officines, nil
+}

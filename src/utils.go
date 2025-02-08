@@ -9,8 +9,17 @@ import (
 	"github.com/charmbracelet/log"
 )
 
-func writeResults(data ListeAttente, flags *Flags) error {
-	jsonData, err := json.MarshalIndent(data, "", "\t")
+func writeResults(data *Checkpoint, flags *Flags) error {
+	var err error
+	var jsonData []byte
+
+	switch flags.Mode {
+	case MODE_ATTENTE:
+		jsonData, err = json.MarshalIndent(data.PartialResultsAttente, "", "\t")
+	case MODE_OFFICINE:
+		jsonData, err = json.MarshalIndent(data.PartialResultsOfficine, "", "\t")
+	}
+
 	if err != nil {
 		return fmt.Errorf("Failed to marshal data: %s", err)
 	}
