@@ -68,7 +68,7 @@ func processGouvernourat(ctx context.Context, page *rod.Page, gov Gouvernourat, 
 	}
 
 	// waiting for delegations select to be ready
-	delSelect := page.MustElement("select[name='cod_del']")
+	delSelect := getDelegationSelect(page, flags)
 	options := delSelect.MustElements("option")
 
 	log.Debug("Getting list of delegations")
@@ -128,7 +128,7 @@ func processDelegation(page *rod.Page, gov Gouvernourat, del Delegation, checkpo
 
 	// select delegation
 	log.Debugf("Selecting delegation %s", del)
-	page.MustElement("select[name='cod_del']").MustSelect(string(del))
+	getDelegationSelect(page, flags).MustSelect(string(del))
 	page.MustElement("input[type='submit']").MustClick()
 
 	// wait for the page to be ready

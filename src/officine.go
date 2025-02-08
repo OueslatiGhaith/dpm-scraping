@@ -63,7 +63,7 @@ func processOfficines(ctx context.Context, page *rod.Page, gov Gouvernourat, che
 		return fmt.Errorf("failed to navigate to main page: %w", err)
 	}
 
-	delSelect := page.MustElement("select[name='cod_del']")
+	delSelect := getDelegationSelect(page, flags)
 	options := delSelect.MustElements("option")
 
 	log.Debug("Getting list of delegations")
@@ -116,7 +116,7 @@ func processOfficineDelegation(page *rod.Page, gov Gouvernourat, del Delegation,
 	}
 
 	page.MustWaitLoad()
-	page.MustElement("select[name='cod_del']").MustSelect(string(del))
+	getDelegationSelect(page, flags).MustSelect(string(del))
 	page.MustElement("input[type='submit']").MustClick()
 
 	page.MustWaitLoad()

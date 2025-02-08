@@ -87,55 +87,14 @@ func navigateToGouvernourat(page *rod.Page, link string, gouvernourat Gouvernour
 	return nil
 }
 
-// func trimWhitespace(v interface{}) {
-// 	val := reflect.ValueOf(v)
-
-// 	if val.Kind() == reflect.Pointer {
-// 		val = val.Elem()
-// 	}
-
-// 	if !val.IsValid() || !val.CanSet() {
-// 		return
-// 	}
-
-// 	switch val.Kind() {
-// 	case reflect.String:
-// 		log.Error("Hello")
-// 		s := val.String()
-// 		s = strings.TrimSpace(s)
-// 		s = strings.ReplaceAll(s, " ", "")
-// 		if strings.Contains(s, " ") {
-// 			log.Fatal("Found non-breaking space in string")
-// 		}
-// 		val.SetString(s)
-
-// 	case reflect.Struct:
-// 		for i := 0; i < val.NumField(); i++ {
-// 			field := val.Field(i)
-// 			if field.CanInterface() {
-// 				trimWhitespace(field.Addr().Interface())
-// 			}
-// 		}
-
-// 	case reflect.Slice, reflect.Array:
-// 		for i := 0; i < val.Len(); i++ {
-// 			item := val.Index(i)
-// 			if item.CanAddr() && item.Addr().CanInterface() {
-// 				trimWhitespace(item.Addr().Interface())
-// 			}
-// 		}
-
-// 	case reflect.Map:
-// 		for _, key := range val.MapKeys() {
-// 			item := val.MapIndex(key)
-// 			if item.CanInterface() {
-// 				newVal := reflect.New(item.Type()).Elem()
-// 				newVal.Set(item)
-// 				if newVal.CanAddr() {
-// 					trimWhitespace(newVal.Addr().Interface())
-// 					val.SetMapIndex(key, newVal)
-// 				}
-// 			}
-// 		}
-// 	}
-// }
+func getDelegationSelect(page *rod.Page, flags *Flags) *rod.Element {
+	switch flags.Time {
+	case TIME_JOUR:
+		return page.MustElement("select[name='cod_del']")
+	case TIME_NUIT:
+		return page.MustElement("select[name='cod_comm']")
+	default:
+		log.Error("Invalid time")
+		return nil
+	}
+}
