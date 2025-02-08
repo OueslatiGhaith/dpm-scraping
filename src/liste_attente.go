@@ -166,7 +166,7 @@ func extractAttente(page *rod.Page) (*Attente, error) {
 		if err != nil {
 			continue
 		}
-		if strings.Contains(text, "Pas d'inscription sur cette liste") {
+		if strings.Contains(text, "nscription su") {
 			return attente, nil
 		}
 	}

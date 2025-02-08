@@ -146,7 +146,7 @@ func extractOfficines(page *rod.Page) ([]*Officine, error) {
 	font, err := body.Element("font")
 	if err == nil { // If font exists, check its text
 		text, _ := font.Text()
-		if strings.TrimSpace(text) == "Aucune officine installée dans cette zone" {
+		if strings.Contains(text, "ucune officin") {
 			return officines, nil // Return empty list
 		}
 	}
