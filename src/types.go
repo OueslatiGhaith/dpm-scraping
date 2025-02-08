@@ -2,6 +2,11 @@ package src
 
 import "time"
 
+type (
+	Gouvernourat string
+	Delegation   string
+)
+
 type Attente struct {
 	Zone        string            `json:"zone"`
 	Population  string            `json:"population"`
@@ -24,15 +29,12 @@ type Officine struct {
 	Telephone string `json:"telephone"`
 }
 
-type ListeAttente map[string]map[string]*Attente
-type ListeOfficine map[string]map[string][]*Officine
-
 type Checkpoint struct {
-	LastUpdated            time.Time           `json:"last_updated"`
-	CurrentGov             string              `json:"current_gov"`
-	CurrentDel             string              `json:"current_del"`
-	ProcessedGovs          map[string]bool     `json:"processed_govs"`
-	ProcessedDels          map[string][]string `json:"processed_dels"`
-	PartialResultsAttente  ListeAttente        `json:"partial_results"`
-	PartialResultsOfficine ListeOfficine       `json:"partial_results_officine"`
+	LastUpdated            time.Time                                   `json:"last_updated"`
+	CurrentGov             Gouvernourat                                `json:"current_gov"`
+	CurrentDel             Delegation                                  `json:"current_del"`
+	ProcessedGovs          map[Gouvernourat]bool                       `json:"processed_govs"`
+	ProcessedDels          map[Gouvernourat][]Delegation               `json:"processed_dels"`
+	PartialResultsAttente  map[Gouvernourat]map[Delegation][]*Attente  `json:"partial_results"`
+	PartialResultsOfficine map[Gouvernourat]map[Delegation][]*Officine `json:"partial_results_officine"`
 }

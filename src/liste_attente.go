@@ -21,10 +21,10 @@ func scrapeWaitingList(ctx context.Context, page *rod.Page, checkpoint *Checkpoi
 	options := govSelect.MustElements("option")
 	log.Debugf("Got %d gouvernourats", len(options))
 
-	var gouvernourats []string
+	var gouvernourats []Gouvernourat
 	for _, opt := range options {
 		gov := opt.MustText()
-		gouvernourats = append(gouvernourats, gov)
+		gouvernourats = append(gouvernourats, Gouvernourat(gov))
 	}
 
 	for _, gov := range gouvernourats {
@@ -61,7 +61,7 @@ func scrapeWaitingList(ctx context.Context, page *rod.Page, checkpoint *Checkpoi
 	return nil
 }
 
-func processGouvernourat(ctx context.Context, page *rod.Page, gov string, checkpoint *Checkpoint, flags *Flags) error {
+func processGouvernourat(ctx context.Context, page *rod.Page, gov Gouvernourat, checkpoint *Checkpoint, flags *Flags) error {
 	// navigate to the main page and select the gouvernourat
 	if err := navigateToGouvernourat(page, LISTE_ATTENTE, gov, flags); err != nil {
 		return fmt.Errorf("failed to navigate to gouvernourat: %w", err)
@@ -72,15 +72,15 @@ func processGouvernourat(ctx context.Context, page *rod.Page, gov string, checkp
 	options := delSelect.MustElements("option")
 
 	log.Debug("Getting list of delegations")
-	var delegations []string
+	var delegations []Delegation
 	for _, opt := range options {
 		del := opt.MustText()
-		delegations = append(delegations, del)
+		delegations = append(delegations, Delegation(del))
 	}
 
 	// initialize map for this gouvernourat if needed
 	if checkpoint.PartialResultsAttente[gov] == nil {
-		checkpoint.PartialResultsAttente[gov] = make(map[string]*Attente)
+		checkpoint.PartialResultsAttente[gov] = make(map[Delegation][]*Attente)
 	}
 
 	// process each delegation
@@ -107,7 +107,7 @@ func processGouvernourat(ctx context.Context, page *rod.Page, gov string, checkp
 
 		// update checkpoint
 		if checkpoint.ProcessedDels[gov] == nil {
-			checkpoint.ProcessedDels[gov] = make([]string, 0)
+			checkpoint.ProcessedDels[gov] = make([]Delegation, 0)
 		}
 		checkpoint.ProcessedDels[gov] = append(checkpoint.ProcessedDels[gov], del)
 
@@ -120,7 +120,7 @@ func processGouvernourat(ctx context.Context, page *rod.Page, gov string, checkp
 	return nil
 }
 
-func processDelegation(page *rod.Page, gov, del string, checkpoint *Checkpoint, flags *Flags) error {
+func processDelegation(page *rod.Page, gov Gouvernourat, del Delegation, checkpoint *Checkpoint, flags *Flags) error {
 	// navigate to the main page and select the gouvernourat
 	if err := navigateToGouvernourat(page, LISTE_ATTENTE, gov, flags); err != nil {
 		return fmt.Errorf("failed to navigate to gouvernourat: %w", err)
@@ -128,7 +128,7 @@ func processDelegation(page *rod.Page, gov, del string, checkpoint *Checkpoint, 
 
 	// select delegation
 	log.Debugf("Selecting delegation %s", del)
-	page.MustElement("select[name='cod_del']").MustSelect(del)
+	page.MustElement("select[name='cod_del']").MustSelect(string(del))
 	page.MustElement("input[type='submit']").MustClick()
 
 	// wait for the page to be ready
@@ -142,9 +142,9 @@ func processDelegation(page *rod.Page, gov, del string, checkpoint *Checkpoint, 
 
 	// store in checkpoint
 	if checkpoint.PartialResultsAttente[gov] == nil {
-		checkpoint.PartialResultsAttente[gov] = make(map[string]*Attente)
+		checkpoint.PartialResultsAttente[gov] = make(map[Delegation][]*Attente)
 	}
-	checkpoint.PartialResultsAttente[gov][del] = attente
+	checkpoint.PartialResultsAttente[gov][del] = append(checkpoint.PartialResultsAttente[gov][del], attente)
 
 	return nil
 }
@@ -166,7 +166,7 @@ func extractAttente(page *rod.Page) (*Attente, error) {
 		if err != nil {
 			continue
 		}
-		if strings.TrimSpace(text) == "Pas d'inscription sur cette liste" {
+		if strings.Contains(text, "Pas d'inscription sur cette liste") {
 			return attente, nil
 		}
 	}
@@ -218,15 +218,15 @@ func extractAttente(page *rod.Page) (*Attente, error) {
 
 			switch j {
 			case 0:
-				person.Ordre = text
+				person.Ordre = strings.TrimSpace(text)
 			case 1:
-				person.Nom = text
+				person.Nom = strings.TrimSpace(text)
 			case 2:
-				person.Prenom = text
+				person.Prenom = strings.TrimSpace(text)
 			case 3:
-				person.Epouse = text
+				person.Epouse = strings.TrimSpace(text)
 			case 4:
-				person.DateInscription = text
+				person.DateInscription = strings.TrimSpace(text)
 			}
 		}
 

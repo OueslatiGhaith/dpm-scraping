@@ -20,10 +20,10 @@ func scrapeOfficines(ctx context.Context, page *rod.Page, checkpoint *Checkpoint
 	govSelect := page.MustElement("select[name='cod_gouv']")
 	options := govSelect.MustElements("option")
 
-	var gouvernourats []string
+	var gouvernourats []Gouvernourat
 	for _, opt := range options {
 		gov := opt.MustText()
-		gouvernourats = append(gouvernourats, gov)
+		gouvernourats = append(gouvernourats, Gouvernourat(gov))
 	}
 
 	for _, gov := range gouvernourats {
@@ -58,7 +58,7 @@ func scrapeOfficines(ctx context.Context, page *rod.Page, checkpoint *Checkpoint
 	return nil
 }
 
-func processOfficines(ctx context.Context, page *rod.Page, gov string, checkpoint *Checkpoint, flags *Flags) error {
+func processOfficines(ctx context.Context, page *rod.Page, gov Gouvernourat, checkpoint *Checkpoint, flags *Flags) error {
 	if err := navigateToGouvernourat(page, OFFICINE, gov, flags); err != nil {
 		return fmt.Errorf("failed to navigate to main page: %w", err)
 	}
@@ -67,14 +67,14 @@ func processOfficines(ctx context.Context, page *rod.Page, gov string, checkpoin
 	options := delSelect.MustElements("option")
 
 	log.Debug("Getting list of delegations")
-	var delegations []string
+	var delegations []Delegation
 	for _, opt := range options {
 		del := opt.MustText()
-		delegations = append(delegations, del)
+		delegations = append(delegations, Delegation(del))
 	}
 
 	if checkpoint.PartialResultsOfficine[gov] == nil {
-		checkpoint.PartialResultsOfficine[gov] = make(map[string][]*Officine)
+		checkpoint.PartialResultsOfficine[gov] = make(map[Delegation][]*Officine)
 	}
 
 	for _, del := range delegations {
@@ -98,7 +98,7 @@ func processOfficines(ctx context.Context, page *rod.Page, gov string, checkpoin
 		}
 
 		if checkpoint.ProcessedDels[gov] == nil {
-			checkpoint.ProcessedDels[gov] = make([]string, 0)
+			checkpoint.ProcessedDels[gov] = make([]Delegation, 0)
 		}
 		checkpoint.ProcessedDels[gov] = append(checkpoint.ProcessedDels[gov], del)
 
@@ -110,13 +110,13 @@ func processOfficines(ctx context.Context, page *rod.Page, gov string, checkpoin
 	return nil
 }
 
-func processOfficineDelegation(page *rod.Page, gov, del string, checkpoint *Checkpoint, flags *Flags) error {
+func processOfficineDelegation(page *rod.Page, gov Gouvernourat, del Delegation, checkpoint *Checkpoint, flags *Flags) error {
 	if err := navigateToGouvernourat(page, OFFICINE, gov, flags); err != nil {
 		return fmt.Errorf("failed to navigate to main page: %w", err)
 	}
 
 	page.MustWaitLoad()
-	page.MustElement("select[name='cod_del']").MustSelect(del)
+	page.MustElement("select[name='cod_del']").MustSelect(string(del))
 	page.MustElement("input[type='submit']").MustClick()
 
 	page.MustWaitLoad()
@@ -127,7 +127,7 @@ func processOfficineDelegation(page *rod.Page, gov, del string, checkpoint *Chec
 	}
 
 	if checkpoint.PartialResultsOfficine[gov] == nil {
-		checkpoint.PartialResultsOfficine[gov] = make(map[string][]*Officine)
+		checkpoint.PartialResultsOfficine[gov] = make(map[Delegation][]*Officine)
 	}
 	checkpoint.PartialResultsOfficine[gov][del] = officines
 

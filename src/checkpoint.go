@@ -15,10 +15,10 @@ func loadCheckpoint(flags *Flags) (*Checkpoint, error) {
 		log.Debug("Checkpoint file does not exist, creating a new one")
 		return &Checkpoint{
 			LastUpdated:            time.Now(),
-			ProcessedGovs:          make(map[string]bool),
-			ProcessedDels:          make(map[string][]string),
-			PartialResultsAttente:  make(ListeAttente),
-			PartialResultsOfficine: make(ListeOfficine),
+			ProcessedGovs:          make(map[Gouvernourat]bool),
+			ProcessedDels:          make(map[Gouvernourat][]Delegation),
+			PartialResultsAttente:  make(map[Gouvernourat]map[Delegation][]*Attente),
+			PartialResultsOfficine: make(map[Gouvernourat]map[Delegation][]*Officine),
 		}, nil
 	}
 
