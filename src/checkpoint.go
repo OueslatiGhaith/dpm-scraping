@@ -17,7 +17,7 @@ func loadCheckpoint(flags *Flags) (*Checkpoint, error) {
 			LastUpdated:            time.Now(),
 			ProcessedGovs:          make(map[Gouvernourat]bool),
 			ProcessedDels:          make(map[Gouvernourat][]Delegation),
-			PartialResultsAttente:  make(map[Gouvernourat]map[Delegation][]*Attente),
+			PartialResultsAttente:  make(map[Gouvernourat]map[Delegation]*Attente),
 			PartialResultsOfficine: make(map[Gouvernourat]map[Delegation][]*Officine),
 		}, nil
 	}

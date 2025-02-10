@@ -35,6 +35,6 @@ type Checkpoint struct {
 	CurrentDel             Delegation                                  `json:"current_del"`
 	ProcessedGovs          map[Gouvernourat]bool                       `json:"processed_govs"`
 	ProcessedDels          map[Gouvernourat][]Delegation               `json:"processed_dels"`
-	PartialResultsAttente  map[Gouvernourat]map[Delegation][]*Attente  `json:"partial_results"`
+	PartialResultsAttente  map[Gouvernourat]map[Delegation]*Attente    `json:"partial_results"`
 	PartialResultsOfficine map[Gouvernourat]map[Delegation][]*Officine `json:"partial_results_officine"`
 }
