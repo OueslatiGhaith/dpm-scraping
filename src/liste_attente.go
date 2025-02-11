@@ -24,6 +24,7 @@ func scrapeWaitingList(ctx context.Context, page *rod.Page, checkpoint *Checkpoi
 	var gouvernourats []Gouvernourat
 	for _, opt := range options {
 		gov := opt.MustText()
+		gov = strings.TrimSpace(gov)
 		gouvernourats = append(gouvernourats, Gouvernourat(gov))
 	}
 
@@ -75,6 +76,7 @@ func processGouvernourat(ctx context.Context, page *rod.Page, gov Gouvernourat, 
 	var delegations []Delegation
 	for _, opt := range options {
 		del := opt.MustText()
+		del = strings.TrimSpace(del)
 		delegations = append(delegations, Delegation(del))
 	}
 
@@ -173,12 +175,15 @@ func extractAttente(page *rod.Page) (*Attente, error) {
 
 	// extract zone, population, nb_officines using XPath
 	attente.Zone = getByXPath(page, `/html/body/table/tbody/tr[1]/td/p/font/b/b/font[2]`)
+	attente.Zone = strings.TrimSpace(attente.Zone)
 	log.Debug("Extracted zone")
 
 	attente.Population = getByXPath(page, "/html/body/table/tbody/tr[1]/td/p/font/b/b/b/font[2]")
+	attente.Population = strings.TrimSpace(attente.Population)
 	log.Debug("Extracted population")
 
 	attente.NbOfficines = getByXPath(page, "/html/body/table/tbody/tr[1]/td/p/font/b/b/b/b/font[2]")
+	attente.NbOfficines = strings.TrimSpace(attente.NbOfficines)
 	log.Debug("Extracted nbOfficines")
 
 	// get waiting list from last table

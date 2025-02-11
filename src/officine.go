@@ -23,6 +23,7 @@ func scrapeOfficines(ctx context.Context, page *rod.Page, checkpoint *Checkpoint
 	var gouvernourats []Gouvernourat
 	for _, opt := range options {
 		gov := opt.MustText()
+		gov = strings.TrimSpace(gov)
 		gouvernourats = append(gouvernourats, Gouvernourat(gov))
 	}
 
@@ -70,6 +71,7 @@ func processOfficines(ctx context.Context, page *rod.Page, gov Gouvernourat, che
 	var delegations []Delegation
 	for _, opt := range options {
 		del := opt.MustText()
+		del = strings.TrimSpace(del)
 		delegations = append(delegations, Delegation(del))
 	}
 
