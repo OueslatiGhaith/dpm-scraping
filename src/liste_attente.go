@@ -154,7 +154,9 @@ func processDelegation(page *rod.Page, gov Gouvernourat, del Delegation, checkpo
 func extractAttente(page *rod.Page) (*Attente, error) {
 	log.Debug("Extracting attente")
 
-	attente := &Attente{}
+	attente := &Attente{
+		Liste: []PersonneAttente{},
+	}
 
 	// check for empty state
 	fonts, err := page.Elements("font")
